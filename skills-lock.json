@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "react-doctor": {
+      "source": "millionco/react-doctor",
+      "sourceType": "github",
+      "skillPath": "skills/react-doctor/SKILL.md",
+      "computedHash": "be7a62af30bedd58cacaf1fb23dd565121d4da73280ceb39833ab885a8101cb6"
+    },
+    "rule-research": {
+      "source": "millionco/react-doctor",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/rule-research/SKILL.md",
+      "computedHash": "04036489e5a64e16776589e0c352c8f1b0c58d2ed22b68d0d9c0b7d2456665bd"
+    },
+    "rule-validate": {
+      "source": "millionco/react-doctor",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/rule-validate/SKILL.md",
+      "computedHash": "07114c204fd0963fb6a4a4ae78c4e9251e4b6e09f7cd01668cb38cd357584abd"
+    },
+    "rule-writing": {
+      "source": "millionco/react-doctor",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/rule-writing/SKILL.md",
+      "computedHash": "ecb2535406962a2e60828e8729f3b0749698945b59cb341a94a6e156211c5834"
+    }
+  }
+}

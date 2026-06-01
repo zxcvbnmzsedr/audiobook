@@ -1,0 +1,89 @@
+{
+  "name": "voc-studio-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Voc Studio desktop shell for the local audiobook workspace",
+  "main": "src/main.js",
+  "scripts": {
+    "check": "pnpm run check:syntax && pnpm run check:smoke && pnpm run check:package",
+    "check:package": "node scripts/check-package.mjs",
+    "check:launch": "node scripts/launch-smoke.mjs",
+    "check:smoke": "node scripts/smoke.mjs",
+    "check:syntax": "node --check src/main.js && node --check src/preload.js && node --check src/backend.js && node --check src/paths.js && node --check src/ports.js && node --check src/diagnostics.js && node --check scripts/check-package.mjs && node --check scripts/smoke.mjs && node --check scripts/launch-smoke.mjs",
+    "dev": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^42.3.0",
+    "electron-builder": "^26.8.1"
+  },
+  "build": {
+    "appId": "studio.voc.app",
+    "productName": "Voc Studio",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../app",
+        "to": "app",
+        "filter": [
+          "**/*",
+          "!__pycache__/**",
+          "!**/__pycache__/**",
+          "!*.pyc",
+          "!**/*.pyc",
+          "!.venv/**",
+          "!.uv-cache/**",
+          "!config.json",
+          "!uploads/**",
+          "!books/**"
+        ]
+      },
+      {
+        "from": "../default_prompts.txt",
+        "to": "default_prompts.txt"
+      },
+      {
+        "from": "../review_prompts.txt",
+        "to": "review_prompts.txt"
+      },
+      {
+        "from": "../builtin_lora/manifest.json",
+        "to": "builtin_lora/manifest.json"
+      },
+      {
+        "from": "../pyproject.toml",
+        "to": "pyproject.toml"
+      },
+      {
+        "from": "../uv.lock",
+        "to": "uv.lock"
+      },
+      {
+        "from": "../icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon.png"
+    },
+    "win": {
+      "icon": "assets/icon.png"
+    },
+    "linux": {
+      "category": "AudioVideo",
+      "icon": "assets/icon.png",
+      "target": [
+        "AppImage"
+      ]
+    }
+  }
+}

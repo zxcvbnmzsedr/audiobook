@@ -1,0 +1,15 @@
+{
+  "name": "voc-studio-workspace",
+  "private": true,
+  "packageManager": "pnpm@10.32.0",
+  "scripts": {
+    "desktop": "pnpm --filter voc-studio-desktop run dev",
+    "desktop:attach": "VOC_STUDIO_BACKEND_URL=http://127.0.0.1:4200 pnpm --filter voc-studio-desktop run dev",
+    "desktop:check": "pnpm --filter voc-studio-desktop run check",
+    "desktop:pack": "pnpm --filter voc-studio-desktop run pack -- --publish never",
+    "frontend:build": "pnpm --filter frontend run build",
+    "frontend:dev": "pnpm --filter frontend run dev",
+    "frontend:lint": "pnpm --filter frontend run lint",
+    "frontend:typecheck": "pnpm --filter frontend exec tsc -b --pretty false"
+  }
+}

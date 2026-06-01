@@ -1,0 +1,83 @@
+ENVIRONMENT
+node_modules
+venv
+env
+.venv/
+app/env/
+app/.venv/
+.env
+.*
+!.github/
+!.gitignore
+!.dockerignore
+~*
+/logs/
+/cache/
+state.json
+voice_config.json
+voices.json
+annotated_script.json
+annotated_script.txt
+cloned_audiobook.mp3
+audacity_export.zip
+audiobook.m4b
+m4b_cover.jpg
+temp_m4b_combined.wav
+temp_m4b_meta.txt
+voicelines/
+scripts/
+!desktop/scripts/
+!desktop/scripts/*.mjs
+books/
+app/config.json
+app/output_audio_cloned/
+app/output_audio/
+/AGENTS.md
+/CLAUDE.md
+/GEMINI.md
+/QWEN.md
+/SPEC.md
+
+audiobook.mp3
+
+# Generated runtime files
+chunks.json
+temp_batch_*.wav
+app/flash-attention/
+error_screenshot.png
+app/error_screenshot.png
+debug_raw_response.txt
+test.txt
+tts_style_test*.json
+
+# Python cache
+__pycache__/
+*.pyc
+
+# User uploads
+app/uploads/
+
+# Designed voices (user-generated)
+designed_voices/
+
+# Clone voices (user-uploaded reference audio)
+clone_voices/
+
+# LoRA training (user-generated)
+lora_models/
+lora_datasets/
+
+# Built-in LoRA adapter files (downloaded from HF on demand)
+builtin_lora/builtin_*/
+# Keep manifest.json tracked as offline fallback
+!builtin_lora/manifest.json
+
+# Dataset builder working directory
+dataset_builder/
+
+# Docker persistent data
+data/
+.ace-tool/
+
+# Desktop build outputs
+desktop/release/

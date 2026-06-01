@@ -1,0 +1,8 @@
+{
+  "title": "Voc Studio",
+  "description": "基于 Qwen3-TTS 的多声音 AI 有声书生成器：使用 LLM 标注脚本，为角色分配独立声音，逐行设置演绎风格，可通过参考音频克隆声音、用文字描述设计新声音、用 LoRA 微调训练自定义声音，并导出为 MP3 或 Audacity 多轨项目。",
+  "icon": "icon.png",
+  "plugin": {
+    "menu": []
+  }
+}

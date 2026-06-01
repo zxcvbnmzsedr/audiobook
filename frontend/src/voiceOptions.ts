@@ -1,0 +1,27 @@
+export const voiceTypeOptions = [
+  { value: 'edge', label: 'Edge TTS' },
+  { value: 'custom', label: '本地/默认' },
+  { value: 'dashscope', label: 'DashScope' },
+  { value: 'volcengine', label: '火山引擎' },
+  { value: 'clone', label: '克隆音频' },
+  { value: 'design', label: '声音设计' },
+  { value: 'lora', label: 'LoRA' },
+  { value: 'builtin_lora', label: '内置 LoRA' },
+]
+
+export const dashscopeModelOptions = [
+  { value: 'qwen3-tts-instruct-flash', label: 'Qwen3-TTS Instruct Flash' },
+  { value: 'qwen3-tts-flash', label: 'Qwen3-TTS Flash' },
+  { value: 'cosyvoice-v3-flash', label: 'CosyVoice v3 Flash' },
+  { value: 'cosyvoice-v3-plus', label: 'CosyVoice v3 Plus' },
+  { value: 'cosyvoice-v2', label: 'CosyVoice v2' },
+]
+
+export const volcengineResourceOptions = [
+  { value: 'seed-tts-2.0', label: '语音合成 2.0' },
+  { value: 'seed-tts-1.0', label: '语音合成 1.0' },
+  { value: 'seed-tts-1.0-concurr', label: '语音合成 1.0 并发版' },
+  { value: 'seed-icl-2.0', label: '声音复刻 2.0' },
+  { value: 'seed-icl-1.0', label: '声音复刻 1.0' },
+  { value: 'seed-icl-1.0-concurr', label: '声音复刻 1.0 并发版' },
+]
