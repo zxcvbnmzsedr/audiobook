@@ -1,5 +1,3 @@
-<img width="475" height="467" alt="Voc Studio Logo" src="https://github.com/user-attachments/assets/fa2c36d3-a5f3-49ab-9dfe-30933359dfbd" />
-
 # Voc Studio — AI Audiobook Studio
 
 English | [中文](README_CN.md)
@@ -11,10 +9,6 @@ Turn any book or novel into a fully voice-acted audiobook with AI-driven script 
 ## 🎧 Listen to Samples
 
 - **▶️ Sample playlist on YouTube:** https://www.youtube.com/watch?v=54TlmKga5Yo&list=PLL1mTdaXmcGr1pJxg6gt84OwE7kMutIcF&index=3
-
-## Screenshots
-
-<img src="https://github.com/user-attachments/assets/874b5e30-56d2-4292-b754-4408fc53f5d6" width="30%"></img> <img src="https://github.com/user-attachments/assets/488cde02-6b93-47fa-874b-97a618ae482c" width="30%"></img> <img src="https://github.com/user-attachments/assets/4c0805a6-bb9d-42c1-a9ff-79bb29d0613c" width="30%"></img> <img src="https://github.com/user-attachments/assets/8e58a5bf-ed8f-4864-8545-1e3d9681b0cf" width="30%"></img> <img src="https://github.com/user-attachments/assets/531830da-8668-4189-a0dc-020e6661bfb6" width="30%"></img>
 
 ---
 
