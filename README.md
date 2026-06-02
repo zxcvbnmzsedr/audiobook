@@ -1,208 +1,304 @@
-# Voc Studio
+<img width="475" height="467" alt="Voc Studio Logo" src="https://github.com/user-attachments/assets/fa2c36d3-a5f3-49ab-9dfe-30933359dfbd" />
 
-Voc Studio 是一个本地优先的 AI 有声书工作台。它把小说或长文本拆成章节，调用外部 LLM 生成带说话人、对白和语音演绎指令的脚本，再通过 TTS 引擎生成多角色语音，最后合成为 MP3、M4B 或 Audacity 多轨素材。
+# Voc Studio — AI Audiobook Studio
 
-当前项目包含三层：
+English | [中文](README_CN.md)
 
-- FastAPI 后端：负责书库、章节、脚本生成、人物池、声音配置、音频生成和导出。
-- React Web 前端：提供书库、工作台、能力中心和设置页。
-- Electron 桌面壳：启动或挂接本地后端，管理数据目录、日志目录和本地运行诊断。
+> **A note for new users:** Thank you for the overwhelming interest! Voc Studio recently received a sudden wave of attention, and new users are arriving faster than we expected. As a small project, we may not be able to respond to every issue in time. Before opening one, please read this document and the [Wiki](https://github.com/zxcvbnmzsedr/audiobook/wiki) — they cover the vast majority of common questions. Thanks for your patience and understanding!
 
-## 主要能力
+Turn any book or novel into a fully voice-acted audiobook with AI-driven script tagging and text-to-speech. Powered by a built-in Qwen3-TTS engine, with batch processing and an in-browser editor for line-by-line fine-tuning before export.
 
-- 多书库管理：每本书有独立章节、脚本、人物池、声音配置、音频片段和导出结果。
-- 章节级脚本生成：支持断点恢复、指定章节重跑、缺失章节修复和生成前 dry-run。
-- 人物池与角色声音：自动识别角色，维护 canonical/aliases/traits/voice_profile，并为每个说话人配置独立音色。
-- LLM 审校与诊断：脚本生成和审校都有状态、日志、结构化事件和用量信息。
-- 多种 TTS 后端：本地 Qwen3-TTS、Edge TTS、DashScope、Volcengine、声音克隆、声音设计和 LoRA。
-- 音频编辑闭环：可逐块试听、编辑文本/说话人/指令、单块重生、批量生成、章节合并和全书合并。
-- 导出格式：MP3、章节 M4B、Audacity 多轨 ZIP、单独 voicelines。
-- 桌面模式：Electron 自动选择本地端口，启动后端，限制外部导航，并提供运行诊断。
+## 🎧 Listen to Samples
 
-## 目录结构
+- **▶️ Sample playlist on YouTube:** https://www.youtube.com/watch?v=54TlmKga5Yo&list=PLL1mTdaXmcGr1pJxg6gt84OwE7kMutIcF&index=3
+
+## Screenshots
+
+<img src="https://github.com/user-attachments/assets/874b5e30-56d2-4292-b754-4408fc53f5d6" width="30%"></img> <img src="https://github.com/user-attachments/assets/488cde02-6b93-47fa-874b-97a618ae482c" width="30%"></img> <img src="https://github.com/user-attachments/assets/4c0805a6-bb9d-42c1-a9ff-79bb29d0613c" width="30%"></img> <img src="https://github.com/user-attachments/assets/8e58a5bf-ed8f-4864-8545-1e3d9681b0cf" width="30%"></img> <img src="https://github.com/user-attachments/assets/531830da-8668-4189-a0dc-020e6661bfb6" width="30%"></img>
+
+---
+
+## Features
+
+### AI-Driven Pipeline
+- **Local & cloud LLM support** — works with any OpenAI-compatible API (LM Studio, Ollama, OpenAI, etc.)
+- **Automatic script tagging** — the LLM parses raw text into structured JSON with speakers, dialogue, and TTS directions
+- **LLM script review** — optional second-pass LLM validation that fixes common tagging mistakes
+- **Smart chunking** — groups consecutive lines by speaker (up to 500 characters) to keep speech natural
+- **Context retention** — passes the character roster and the last 3 script entries between chunks to keep characters and style consistent
+
+### Voice Generation
+- **Built-in TTS engine** — Qwen3-TTS runs locally, no external server required
+- **Multilingual** — Chinese, English, French, German, Italian, Japanese, Korean, Portuguese, Russian, Spanish, or auto-detect
+- **Preset voices** — 9 pre-trained voices with instruction-based emotion/tone control
+- **Voice cloning** — clone any voice from just 5–15 seconds of reference audio
+- **Voice designer** — create new voices from a text description (e.g. "a warm, deep male voice with a steady tone")
+- **LoRA voice training** — fine-tune the base model on a custom voice dataset to create a persistent voice identity
+- **Built-in LoRA presets** — ready-to-use pre-trained voice adapters
+- **Dataset builder** — an interactive tool to build training datasets entry by entry, with preview
+- **Batch processing** — generate dozens of voice chunks at once, 3–6× faster than real time
+- **Codec compilation** — optional `torch.compile` optimization for 3–4× faster batch decoding
+
+### Web UI Editor
+- **Clean interface** — a 5-step core pipeline (Setup, Script, Voice, Editor, Result) plus advanced tools (Designer, Dataset, Training)
+- **Chunk editing** — edit the speaker, text, and direction of any line
+- **Selective regeneration** — re-render a single chunk on its own
+- **Live progress** — real-time logs and status tracking for every operation
+- **Audio preview** — play any chunk individually or preview the whole audiobook in order
+
+### Export Options
+- **Merged audiobook** — a single MP3 with all voices and natural pauses
+- **Individual voice lines** — each line exported as a separate MP3, ready for editing in a DAW
+- **Audacity export** — one-click ZIP with per-speaker WAV tracks, a LOF project file, and labels
+- **M4B audiobook** — chaptered M4B (AAC) with auto-detected or per-chunk chapters, for Audiobookshelf, Apple Books, VLC, and more
+
+---
+
+## System Requirements
+
+- [Pinokio](https://pinokio.computer/)
+- An LLM server (pick one):
+  - [LM Studio](https://lmstudio.ai/) (local) — Qwen3 or a similar model recommended
+  - [Ollama](https://ollama.ai/) (local)
+  - [OpenAI API](https://platform.openai.com/) (cloud)
+  - Any OpenAI-compatible API
+- **GPU:** 8 GB VRAM minimum, 16 GB+ recommended — see the compatibility table below
+  - Each TTS model uses ~3.4 GB VRAM; the remaining VRAM determines batch size
+  - CPU mode works on every platform but is noticeably slower
+- **RAM:** 16 GB recommended (8 GB minimum)
+- **Disk:** ~20 GB (8 GB venv/PyTorch + ~7 GB model weights + audio workspace)
+
+### GPU Compatibility
+
+| GPU | OS | Status | Driver requirement | Notes |
+|-----|----|--------|--------------------|-------|
+| **NVIDIA** | Windows | Full support | Driver 550+ (CUDA 12.8) | Includes Flash Attention accelerated encoding |
+| **NVIDIA** | Linux | Full support | Driver 550+ (CUDA 12.8) | Includes Flash Attention + Triton |
+| **AMD** | Linux | Full support | ROCm 6.3 | ROCm optimizations applied automatically |
+| **AMD** | Windows | CPU only | N/A | No GPU acceleration — use Linux for AMD GPU acceleration |
+| **Apple Silicon** | macOS | CPU only | N/A | MPS acceleration not yet supported; runs but is slow |
+
+> **Tip:** No external TTS server is required. Voc Studio bundles the Qwen3-TTS engine, and model weights download automatically from Hugging Face on first use (~3.5 GB per model variant).
+
+---
+
+## Installation
+
+### Option A: Pinokio (recommended)
+
+1. Install [Pinokio](https://pinokio.computer/) if you haven't already
+2. Open Voc Studio in Pinokio: **[Install via Pinokio](https://beta.pinokio.co/apps/github-com-zxcvbnmzsedr-audiobook)**
+   - Or manually: click **Download** in Pinokio and paste `https://github.com/zxcvbnmzsedr/audiobook`
+3. Click **Install** to install dependencies
+4. Click **Start** to launch the web interface
+
+### Option B: Google Colab (no install)
+
+No GPU or an incompatible system? Run Voc Studio in your browser on a free T4 GPU:
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zxcvbnmzsedr/audiobook/blob/main/voc_studio_colab.ipynb)
+
+A free [ngrok account](https://dashboard.ngrok.com/signup) is needed to tunnel the Web UI. See the notebook for details.
+
+---
+
+## First Launch — Read This First
+
+If this is your first time running Voc Studio, read this section carefully before doing anything.
+
+### 1. You must start an LLM server first
+
+Voc Studio **does not include** an LLM — it connects to an external one over an API. Before generating a script, start one of:
+
+| Server | Default URL | How to install |
+|--------|-------------|----------------|
+| [LM Studio](https://lmstudio.ai/) | `http://localhost:1234/v1` | Download, load a model, start the server |
+| [Ollama](https://ollama.ai/) | `http://localhost:11434/v1` | Install, then run `ollama run qwen3` |
+| [OpenAI API](https://platform.openai.com/) | `https://api.openai.com/v1` | Get an API key |
+
+If the LLM server isn't running when you click **Generate Tagged Script**, generation will fail. Check the Pinokio terminal for error details.
+
+### 2. The first TTS generation downloads ~3.5 GB of models
+
+TTS models are **not bundled** and download automatically from Hugging Face the first time you generate audio:
+
+- **~3.5 GB per model variant** (CustomVoice, Base/Clone, VoiceDesign)
+- Only the variants you use are downloaded (most users start with CustomVoice)
+- Downloads run in the background — **watch progress in the Pinokio terminal**
+- The Web UI may look unresponsive during this — that's normal, it's waiting for the download
+- After the first download, models are cached locally and load in seconds
+
+> **Tip:** If a download seems stuck, check your network. If it fails, restart the app and try again — it resumes from where it stopped.
+
+> **Users in mainland China:** If Hugging Face is slow or unreachable, set a mirror before launch: set the `HF_ENDPOINT` environment variable to `https://hf-mirror.com`. You can also add it to the `env` field in start.js: `env: { HF_ENDPOINT: "https://hf-mirror.com" }`. If you hit rate limits, sign up for a free [Hugging Face account](https://huggingface.co/join) and set `HF_TOKEN` to your access token.
+
+### 3. The first batch needs extra warm-up time
+
+The first batch generation in each session is slower than the ones that follow:
+
+- **MIOpen auto-tuning** (AMD GPU): the GPU kernel optimizer runs once per session, adding ~30–60 s
+- **Codec compilation** (if enabled): a one-time ~30–60 s warm-up, after which all batches are 3–4× faster
+- **This is normal.** Generation speed stabilizes after the first batch.
+
+### 4. VRAM determines what you can do
+
+| Available VRAM | What you can do |
+|----------------|-----------------|
+| 8 GB | One model at a time, small batches (2–5 chunks), may need CPU offload |
+| 16 GB | Comfortable for most use cases, batches of 10–20 chunks |
+| 24 GB+ | Full speed, batches of 40–60 chunks with codec compilation |
+
+- If you run low on VRAM, lower **Parallel Tasks** in the config tab or reduce the script text chunk size
+- Close other GPU apps (games, other AI tools) before generating
+- Switching voice type (Custom → Clone → LoRA) unloads and reloads the model, temporarily freeing VRAM
+
+### 5. Where to look when something goes wrong
+
+The Web UI shows high-level status; **detailed logs live in the Pinokio terminal**:
+
+- Click **Terminal** in the Pinokio sidebar for live output
+- Model loading, download progress, VRAM estimates, and errors all show up here
+- If a generation fails silently in the UI, the terminal shows why
+
+---
+
+## Quick Start
+
+The interface is split into a **5-step core pipeline** (green numbered tabs) and **advanced tools** (blue unnumbered tabs). The core pipeline alone is enough to produce an audiobook.
+
+### Core Pipeline
+
+**Step 1 — Config**
+Configure the LLM connection and TTS engine. At minimum:
+- **Base URL:** `http://localhost:1234/v1` (LM Studio) or `http://localhost:11434/v1` (Ollama)
+- **API Key:** your API key (`local` for local servers)
+- **Model name:** the model to use (e.g. `qwen2.5-14b`)
+- **TTS mode:** `local` (built-in engine, recommended) — loads the model directly, no external server
+- Click **Save Config** when done
+
+**Step 2 — Script**
+- Pick a book file with the file selector (.txt, .md, or .epub) — it uploads automatically, and EPUB files convert to plain text
+- Click **Generate Tagged Script** — sends the book to the LLM and splits it into tagged chunks with speaker labels and voice directions
+- *(Optional)* If the generated script has issues, click **Review Script** — runs a second-pass LLM that fixes speaker-attribution and formatting errors
+- Use the save controls below to keep the script for later
+
+**Step 3 — Voice**
+Each character detected in the script gets a voice card. For every speaker:
+- Pick a voice type: Custom Voice (easiest), Voice Clone, LoRA Voice, or Voice Design
+- With Custom Voice, choose from 9 presets (Ryan, Serena, Aiden, etc.) and optionally set a per-character style (e.g. "calm narrator tone")
+- Changes save automatically — see [Voice Types](https://github.com/zxcvbnmzsedr/audiobook/wiki/Voice-Types) for details on each type
+
+**Step 4 — Editor**
+- Click **Render Pending** to batch-generate audio for all chunks
+- Click a single chunk to preview it, or click **Play in Order** to preview sequentially
+- Inline-edit any chunk's text, speaker, or direction, then regenerate it on its own
+- When you're happy, click **Merge All** to combine everything into the final audiobook
+
+**Step 5 — Result**
+- Preview the finished audiobook in the browser
+- Download the MP3, export **M4B** (with chapter markers), or click **Export to Audacity** for per-speaker WAV tracks
+- M4B export supports title, author, and narrator metadata, and can embed cover art
+
+### Advanced Tools (optional)
+
+These tabs are for power users who want more voice control:
+
+- **Designer** — create a new voice from a text description (e.g. "an older woman with a slightly raspy voice"). Once saved, it can be used as a clone reference in the Voice tab
+- **Dataset** — interactively build a LoRA training dataset, entry by entry, with audio preview
+- **Training** — train a LoRA adapter on a voice dataset to create a persistent, instruction-following voice identity
+
+---
+
+## For Developers
+
+Want to run from source instead of Pinokio? Voc Studio is a three-layer, local-first workspace.
+
+### Architecture
+
+- **FastAPI backend** — library, chapters, script generation, character pool, voice config, audio generation, and export
+- **React web frontend** — library, workbench, capability center, and settings pages
+- **Electron desktop shell** — launches or attaches to the local backend, manages the data and log directories, and provides local run diagnostics
+
+### Project Structure
 
 ```text
 .
-├── app/                     # FastAPI 后端、脚本流水线、TTS、测试脚本
-│   ├── app.py               # 后端入口
+├── app/                     # FastAPI backend, script pipeline, TTS, test scripts
+│   ├── app.py               # backend entry point
 │   ├── generate_script_chapters.py
 │   ├── review_script.py
 │   ├── tts.py
 │   └── test_api.py
-├── frontend/                # React + Vite + Ant Design 前端
-├── desktop/                 # Electron 桌面壳
-├── builtin_lora/            # 内置 LoRA manifest
-├── books/                   # 本地书籍运行数据，默认不提交
-├── pyproject.toml           # Python/uv 依赖
-├── package.json             # pnpm workspace 脚本
+├── frontend/                # React + Vite + Ant Design frontend
+├── desktop/                 # Electron desktop shell
+├── builtin_lora/            # built-in LoRA manifests
+├── books/                   # local book runtime data, not committed by default
+├── pyproject.toml           # Python/uv dependencies
+├── package.json             # pnpm workspace scripts
 ├── Dockerfile
 └── docker-compose.yml
 ```
 
-## 环境要求
+### Run From Source
 
-本地开发推荐：
-
-- macOS、Linux 或 Windows
-- Python `>=3.11,<3.14`
-- `uv`
-- Node.js 22+ 与 `pnpm`
-- FFmpeg
-- 至少一个 OpenAI-compatible LLM 服务，例如 LM Studio、Ollama、OpenAI API
-
-语音生成要求取决于所选后端：
-
-- 本地 Qwen3-TTS：推荐 NVIDIA GPU 和较大显存；CPU 可跑但速度很慢。
-- Edge/DashScope/Volcengine：依赖网络和对应服务配置。
-- LoRA 训练：需要更高显存和更长运行时间。
-
-## 快速启动
-
-安装依赖：
+Requirements: Python `>=3.11,<3.14`, [`uv`](https://docs.astral.sh/uv/), Node.js 22+, `pnpm`, and FFmpeg.
 
 ```bash
+# Install dependencies
 uv sync
 pnpm install
-```
 
-启动后端：
-
-```bash
+# Start the backend (default: http://127.0.0.1:4200)
 uv run python app/app.py
-```
 
-后端默认监听：
-
-```text
-http://127.0.0.1:4200
-```
-
-开发前端：
-
-```bash
+# Develop the frontend
 pnpm frontend:dev
-```
 
-构建前端到后端静态目录：
-
-```bash
+# Build the frontend into the backend's static directory
 pnpm frontend:build
-```
 
-启动桌面端：
-
-```bash
+# Launch the desktop shell
 pnpm desktop
-```
 
-如果已有后端在运行，可以让桌面端直接挂接：
-
-```bash
+# Or attach the desktop shell to an already-running backend
 pnpm desktop:attach
 ```
 
-## 基本工作流
-
-1. 在设置页配置 LLM。
-   - 本地 LM Studio 通常是 `http://localhost:1234/v1`
-   - Ollama OpenAI-compatible 入口通常是 `http://localhost:11434/v1`
-   - 本地服务的 API Key 可以填 `local`
-
-2. 创建或选择一本书。
-
-3. 上传 `.txt`、`.md` 或 `.epub`。
-   - 后端会拆分章节并生成章节清单。
-   - 可以在章节页继续调整标题和内容。
-
-4. 生成标注脚本。
-   - LLM 输出 tagged script。
-   - 后端解析为结构化脚本和 chunks。
-   - 生成期间会写入状态、日志、章节记忆和脚本问题报告。
-
-5. 审校脚本。
-   - 可选步骤。
-   - 用于修正说话人归属、旁白/对白混杂、过度拆分等问题。
-
-6. 配置声音。
-   - 为旁白和每个角色选择 TTS 类型、声音、参考音频、风格或 LoRA。
-   - 当前运行时按“精确说话人名称”匹配声音配置。
-
-7. 生成音频。
-   - 可以生成全书缺失片段，也可以只处理当前章节。
-   - 变更文本、说话人或声音配置后，可重新生成对应片段。
-
-8. 合并与导出。
-   - 合并章节 MP3
-   - 合并全书 MP3
-   - 导出 M4B
-   - 导出 Audacity 多轨 ZIP
-
-## 常用命令
+### Common Commands
 
 ```bash
-# 后端 API 快速测试，需要先启动后端
+# Quick backend API test (start the backend first)
 uv run python app/test_api.py
 
-# 包含真实 LLM/TTS 的完整测试，耗时更长
+# Full test with real LLM/TTS (slower)
 uv run python app/test_api.py --full
 
-# 前端检查
+# Frontend checks
 pnpm frontend:typecheck
 pnpm frontend:lint
 pnpm frontend:build
 
-# 桌面端检查
+# Desktop checks
 pnpm desktop:check
 
-# 桌面目录包
+# Desktop directory package
 pnpm desktop:pack
 ```
 
-## Docker
+### Docker
 
-NVIDIA GPU 环境可尝试 Docker 部署：
+On an NVIDIA GPU host you can try the Docker deployment:
 
 ```bash
 docker compose up --build
+# then open http://127.0.0.1:4200
 ```
 
-服务启动后访问：
+Docker Compose mounts runtime data under `data/` and uses a Docker volume to cache Hugging Face models.
 
-```text
-http://127.0.0.1:4200
-```
+### Runtime Configuration
 
-Docker Compose 会挂载 `data/` 下的运行数据，并使用 Docker volume 缓存 Hugging Face 模型。
-
-## 数据目录
-
-Web/后端默认把运行数据放在仓库根目录。常见目录包括：
-
-- `books/`：书籍、章节、脚本、人物池、音频和导出结果
-- `voicelines/`：语音片段
-- `designed_voices/`：声音设计结果
-- `clone_voices/`：克隆声音参考音频
-- `lora_models/`：训练后的 LoRA
-- `lora_datasets/`：LoRA 数据集
-- `dataset_builder/`：数据集构建器工作目录
-- `cache/`：缓存
-- `logs/`：日志
-
-桌面打包模式会把运行数据放到系统应用数据目录：
-
-- macOS：`~/Library/Application Support/Voc Studio/data`
-- Windows：`%APPDATA%/Voc Studio/data`
-- Linux：`~/.config/Voc Studio/data`
-
-也可以通过环境变量指定数据目录：
-
-```bash
-VOC_STUDIO_DATA_DIR=/path/to/data uv run python app/app.py
-```
-
-## 运行配置
-
-后端入口支持这些环境变量：
+The backend entry point supports these environment variables:
 
 ```bash
 VOC_STUDIO_HOST=127.0.0.1
@@ -212,63 +308,85 @@ VOC_STUDIO_DATA_DIR=/path/to/data
 VOC_STUDIO_BUILTIN_LORA_HF_REPO=zxcvbnmzsedr/voc-studio
 ```
 
-桌面端挂接已有后端：
+Attach the desktop shell to a running backend:
 
 ```bash
 VOC_STUDIO_BACKEND_URL=http://127.0.0.1:4200 pnpm desktop
 ```
 
-中国大陆网络环境如果 Hugging Face 下载慢，可以设置：
+### Data Directories
 
-```bash
-HF_ENDPOINT=https://hf-mirror.com
-```
+By default the web/backend stores runtime data at the repo root: `books/`, `voicelines/`, `designed_voices/`, `clone_voices/`, `lora_models/`, `lora_datasets/`, `dataset_builder/`, `cache/`, and `logs/`.
 
-## API 与状态流
+In packaged desktop mode, runtime data goes to the system app-data directory:
 
-常用接口：
+- macOS: `~/Library/Application Support/Voc Studio/data`
+- Windows: `%APPDATA%/Voc Studio/data`
+- Linux: `~/.config/Voc Studio/data`
 
-- `GET /api/config`
-- `POST /api/config`
-- `GET /api/books`
-- `POST /api/upload`
-- `GET /api/chapters`
-- `POST /api/generate_script`
-- `POST /api/review_script`
-- `GET /api/characters`
-- `GET /api/voices`
-- `GET /api/chunks`
-- `POST /api/generate_batch`
-- `POST /api/merge`
-- `POST /api/merge_m4b`
-- `GET /api/status/{task_name}`
-- `GET /api/events/{task_name}`
+---
 
-长任务会写入 `process_state`，前端通过 `/api/status/{task_name}` 轮询状态，也可以通过 `/api/events/{task_name}` 读取结构化事件流。
+## FAQ
 
-## 当前限制
+### Script generation fails
+- Confirm the LLM server is running and reachable
+- Verify the model name matches the loaded model
+- Try a different model — some are poor at JSON output
+- Chain-of-thought models (DeepSeek-R1, GLM4, etc.) can interfere with JSON output. To use one, add `<think>` to the **Banned Tokens** field in settings to disable thinking mode
 
-- LLM 不内置，需要自己启动或配置外部服务。
-- 首次本地 TTS 会下载模型，耗时取决于网络和模型大小。
-- 本地 Qwen3-TTS 对显存比较敏感，低显存机器需要降低并发和 batch 大小。
-- 桌面端目前是本地工作台，不是完整的商业分发包；签名、公证和自动更新还需要补齐。
-- 作为本机工具默认没有账号体系；不要直接暴露到公网。
-- 内置 LoRA 远端仓库默认值已改为 `zxcvbnmzsedr/voc-studio`，如果模型资产还在别的 Hugging Face 仓库，需要用 `VOC_STUDIO_BUILTIN_LORA_HF_REPO` 指向真实仓库。
+### Model download fails or is very slow
+- TTS models (~3.5 GB each) download from Hugging Face on first use
+- **Users in mainland China:** set `HF_ENDPOINT=https://hf-mirror.com` to use a domestic mirror
+- If rate-limited, sign up for a free [Hugging Face account](https://huggingface.co/join) and set `HF_TOKEN`
+- Interrupted downloads resume automatically — just restart the app
 
-## 故障排查
+### TTS generation fails
+- Check the Pinokio terminal for model-loading errors
+- Make sure you have enough VRAM (16 GB+ recommended for bfloat16)
+- Check that every speaker's settings in voice_config.json are valid
+- For voice cloning, confirm the reference audio exists and its transcript is accurate
 
-- 生成脚本失败：先确认 LLM base URL、API Key 和模型名称是否正确。
-- JSON 或脚本格式异常：换一个更稳的非 thinking 模型，或在设置里禁用 `<think>` 等输出。
-- 音频生成失败：检查声音配置是否完整，尤其是克隆声音的参考音频和文本。
-- Edge TTS 没有音频：确认文本语言和所选 Edge voice 的语言匹配。
-- MP3 文件异常：检查 FFmpeg 是否支持 MP3 编码。
-- 桌面端打不开：先用 `uv run python app/app.py` 单独启动后端，再用 `pnpm desktop:attach` 挂接排查。
+### Generation is slow
+- Enable **Compile Codec** in settings (3–4× faster after the first warm-up)
+- Increase **Parallel Tasks** (batch size) if VRAM allows
+- Use **Render Pending** for batch generation instead of generating one at a time
+- A slow first batch is normal (see "First Launch" above)
 
-## 开发注意
+### Out of VRAM / OOM errors
+- Lower **Max Characters Per Batch** in settings (especially with clone/LoRA voices and long reference audio)
+- Lower **Parallel Tasks** (batch size)
+- Close other GPU-heavy apps
+- If it still fails, try `device: cpu` (much slower)
 
-- `frontend` 构建产物输出到 `app/static`。
-- `app/static/legacy.html` 是旧单页前端，仍保留作兼容参考。
-- `books/`、`voicelines/`、`cache/`、`logs/`、模型和训练产物默认不提交。
-- 修改脚本生成、人物池、声音配置或音频路径后，优先跑 `uv run python app/test_api.py`。
-- 修改前端后，优先跑 `pnpm frontend:lint` 和 `pnpm frontend:build`。
-- 修改桌面壳后，优先跑 `pnpm desktop:check`。
+### MP3 files are corrupt or tiny (428 bytes)
+Conda's bundled ffmpeg often lacks the MP3 encoder (libmp3lame) on Windows. Voc Studio auto-detects this and falls back to WAV. For MP3 output:
+- Install ffmpeg with MP3 support: `conda install -c conda-forge ffmpeg`
+- Or remove conda's ffmpeg to use the system one: `conda remove ffmpeg`
+
+### Tips for Chinese books
+- Select "Chinese" or "Auto-detect" in the **TTS Language** dropdown in the config tab
+- The default LLM prompts are written for English — for Chinese books, adapt the prompts in the "Prompt Customization" section of the config tab to Chinese dialogue conventions (e.g. 「」 quotation marks)
+- The `default_prompts.txt` and `review_prompts.txt` files can be edited permanently; changes take effect immediately without a restart
+
+---
+
+## Recommended LLM Models
+
+For script generation, non-thinking models work best:
+- **Qwen3-next** (80B-A3B-instruct) — excellent JSON output and instruction following
+- **Gemma3** (27B recommended) — excellent JSON output and instruction following
+- **Qwen2.5** (any size) — reliable JSON output
+- **Qwen3** (non-thinking variants)
+- **Llama 3.1/3.2** — strong character distinction
+- **Mistral/Mixtral** — fast and reliable
+
+---
+
+## More Documentation
+
+- [中文 README](README_CN.md) — full Chinese documentation
+- [Wiki](https://github.com/zxcvbnmzsedr/audiobook/wiki) — detailed guides: voice types, LoRA training, batch generation, and more
+
+## License
+
+MIT

@@ -1,6 +1,6 @@
 <img width="475" height="467" alt="Voc Studio Logo" src="https://github.com/user-attachments/assets/fa2c36d3-a5f3-49ab-9dfe-30933359dfbd" />
 
-# Voc Studio 有声书工作台
+# Voc Studio — AI 有声书工作台
 
 [English](README.md) | 中文
 
@@ -8,11 +8,15 @@
 
 利用 AI 驱动的脚本标注和文本转语音技术，将任何书籍或小说转化为全配音有声书。内置 Qwen3-TTS 引擎，支持批量处理，并提供浏览器端编辑器，可逐行精调后导出。
 
-## 示例音频：[sample.mp3](https://github.com/user-attachments/files/25276110/sample.mp3)
+## 🎧 在线试听
+
+- **▶️ YouTube 试听播放列表：** https://www.youtube.com/watch?v=54TlmKga5Yo&list=PLL1mTdaXmcGr1pJxg6gt84OwE7kMutIcF&index=3
 
 ## 截图
 
 <img src="https://github.com/user-attachments/assets/874b5e30-56d2-4292-b754-4408fc53f5d6" width="30%"></img> <img src="https://github.com/user-attachments/assets/488cde02-6b93-47fa-874b-97a618ae482c" width="30%"></img> <img src="https://github.com/user-attachments/assets/4c0805a6-bb9d-42c1-a9ff-79bb29d0613c" width="30%"></img> <img src="https://github.com/user-attachments/assets/8e58a5bf-ed8f-4864-8545-1e3d9681b0cf" width="30%"></img> <img src="https://github.com/user-attachments/assets/531830da-8668-4189-a0dc-020e6661bfb6" width="30%"></img>
+
+---
 
 ## 主要功能
 
@@ -205,6 +209,123 @@ Web UI 显示的是高层状态，**详细日志在 Pinokio 终端中**：
 
 ---
 
+## 面向开发者
+
+想从源码运行而不是用 Pinokio？Voc Studio 是一个本地优先、分三层的工作台。
+
+### 项目架构
+
+- **FastAPI 后端** — 负责书库、章节、脚本生成、人物池、声音配置、音频生成和导出
+- **React Web 前端** — 提供书库、工作台、能力中心和设置页
+- **Electron 桌面壳** — 启动或挂接本地后端，管理数据目录、日志目录和本地运行诊断
+
+### 目录结构
+
+```text
+.
+├── app/                     # FastAPI 后端、脚本流水线、TTS、测试脚本
+│   ├── app.py               # 后端入口
+│   ├── generate_script_chapters.py
+│   ├── review_script.py
+│   ├── tts.py
+│   └── test_api.py
+├── frontend/                # React + Vite + Ant Design 前端
+├── desktop/                 # Electron 桌面壳
+├── builtin_lora/            # 内置 LoRA manifest
+├── books/                   # 本地书籍运行数据，默认不提交
+├── pyproject.toml           # Python/uv 依赖
+├── package.json             # pnpm workspace 脚本
+├── Dockerfile
+└── docker-compose.yml
+```
+
+### 从源码运行
+
+环境要求：Python `>=3.11,<3.14`、[`uv`](https://docs.astral.sh/uv/)、Node.js 22+、`pnpm` 和 FFmpeg。
+
+```bash
+# 安装依赖
+uv sync
+pnpm install
+
+# 启动后端（默认：http://127.0.0.1:4200）
+uv run python app/app.py
+
+# 开发前端
+pnpm frontend:dev
+
+# 构建前端到后端静态目录
+pnpm frontend:build
+
+# 启动桌面端
+pnpm desktop
+
+# 或挂接到已运行的后端
+pnpm desktop:attach
+```
+
+### 常用命令
+
+```bash
+# 后端 API 快速测试，需要先启动后端
+uv run python app/test_api.py
+
+# 包含真实 LLM/TTS 的完整测试，耗时更长
+uv run python app/test_api.py --full
+
+# 前端检查
+pnpm frontend:typecheck
+pnpm frontend:lint
+pnpm frontend:build
+
+# 桌面端检查
+pnpm desktop:check
+
+# 桌面目录包
+pnpm desktop:pack
+```
+
+### Docker
+
+NVIDIA GPU 环境可尝试 Docker 部署：
+
+```bash
+docker compose up --build
+# 然后访问 http://127.0.0.1:4200
+```
+
+Docker Compose 会挂载 `data/` 下的运行数据，并使用 Docker volume 缓存 Hugging Face 模型。
+
+### 运行配置
+
+后端入口支持这些环境变量：
+
+```bash
+VOC_STUDIO_HOST=127.0.0.1
+VOC_STUDIO_PORT=4200
+VOC_STUDIO_RELOAD=1
+VOC_STUDIO_DATA_DIR=/path/to/data
+VOC_STUDIO_BUILTIN_LORA_HF_REPO=zxcvbnmzsedr/voc-studio
+```
+
+挂接桌面端到已运行的后端：
+
+```bash
+VOC_STUDIO_BACKEND_URL=http://127.0.0.1:4200 pnpm desktop
+```
+
+### 数据目录
+
+Web/后端默认把运行数据放在仓库根目录：`books/`、`voicelines/`、`designed_voices/`、`clone_voices/`、`lora_models/`、`lora_datasets/`、`dataset_builder/`、`cache/` 和 `logs/`。
+
+桌面打包模式会把运行数据放到系统应用数据目录：
+
+- macOS：`~/Library/Application Support/Voc Studio/data`
+- Windows：`%APPDATA%/Voc Studio/data`
+- Linux：`~/.config/Voc Studio/data`
+
+---
+
 ## 常见问题
 
 ### 脚本生成失败
@@ -243,8 +364,8 @@ Conda 自带的 ffmpeg 在 Windows 上通常缺少 MP3 编码器（libmp3lame）
 - 或移除 conda 的 ffmpeg 以使用系统自带的：`conda remove ffmpeg`
 
 ### 中文书籍处理提示
-- 在配置标签页的 **TTS 语言** 下拉菜单中选择“中文”或“自动检测”
-- 默认 LLM 提示是为英文编写的 — 处理中文书籍时，建议在配置标签页的“提示词自定义”部分修改提示，使其适配中文对话约定（如使用「」引号等）
+- 在配置标签页的 **TTS 语言** 下拉菜单中选择"中文"或"自动检测"
+- 默认 LLM 提示是为英文编写的 — 处理中文书籍时，建议在配置标签页的"提示词自定义"部分修改提示，使其适配中文对话约定（如使用「」引号等）
 - 提示文件 `default_prompts.txt` 和 `review_prompts.txt` 可永久修改，更改即时生效无需重启
 
 ---
@@ -263,8 +384,7 @@ Conda 自带的 ffmpeg 在 Windows 上通常缺少 MP3 编码器（libmp3lame）
 
 ## 更多文档
 
-完整文档请参阅：
-- [English README](README.md) — 完整英文文档，包含 API 参考和项目结构
+- [English README](README.md) — 完整英文文档
 - [Wiki](https://github.com/zxcvbnmzsedr/audiobook/wiki) — 详细指南：声音类型、LoRA 训练、批量生成等
 
 ## 许可证
