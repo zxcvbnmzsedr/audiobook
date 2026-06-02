@@ -2,8 +2,6 @@
 
 English | [中文](README_CN.md)
 
-> **A note for new users:** Thank you for the overwhelming interest! Voc Studio recently received a sudden wave of attention, and new users are arriving faster than we expected. As a small project, we may not be able to respond to every issue in time. Before opening one, please read this document and the [Wiki](https://github.com/zxcvbnmzsedr/audiobook/wiki) — they cover the vast majority of common questions. Thanks for your patience and understanding!
-
 Turn any book or novel into a fully voice-acted audiobook with AI-driven script tagging and text-to-speech. Powered by a built-in Qwen3-TTS engine, with batch processing and an in-browser editor for line-by-line fine-tuning before export.
 
 ## 🎧 Listen to Samples
