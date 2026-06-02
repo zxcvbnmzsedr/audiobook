@@ -2,7 +2,7 @@
 
 English | [中文](README_CN.md)
 
-Turn any book or novel into a fully voice-acted audiobook with AI-driven script tagging and text-to-speech. Powered by a built-in Qwen3-TTS engine, with batch processing and an in-browser editor for line-by-line fine-tuning before export.
+Turn any book or novel into a fully voice-acted audiobook with AI-driven script tagging and text-to-speech. Choose between cloud TTS services — Alibaba Qwen TTS (DashScope), Volcengine (Doubao) TTS, and Microsoft Edge TTS — or a built-in local Qwen3-TTS engine, with batch processing and an in-browser editor for line-by-line fine-tuning before export.
 
 ## 🎧 Listen to Samples
 
@@ -20,7 +20,9 @@ Turn any book or novel into a fully voice-acted audiobook with AI-driven script 
 - **Context retention** — passes the character roster and the last 3 script entries between chunks to keep characters and style consistent
 
 ### Voice Generation
-- **Built-in TTS engine** — Qwen3-TTS runs locally, no external server required
+- **Multiple TTS backends** — pick the right one per project:
+  - **Cloud:** Alibaba Qwen TTS (DashScope), Volcengine (Doubao) TTS, and Microsoft Edge TTS — no GPU and no model download required
+  - **Local:** built-in Qwen3-TTS engine (CustomVoice / Clone / VoiceDesign) — runs offline, no external server
 - **Multilingual** — Chinese, English, French, German, Italian, Japanese, Korean, Portuguese, Russian, Spanish, or auto-detect
 - **Preset voices** — 9 pre-trained voices with instruction-based emotion/tone control
 - **Voice cloning** — clone any voice from just 5–15 seconds of reference audio
@@ -70,7 +72,7 @@ Turn any book or novel into a fully voice-acted audiobook with AI-driven script 
 | **AMD** | Windows | CPU only | N/A | No GPU acceleration — use Linux for AMD GPU acceleration |
 | **Apple Silicon** | macOS | CPU only | N/A | MPS acceleration not yet supported; runs but is slow |
 
-> **Tip:** No external TTS server is required. Voc Studio bundles the Qwen3-TTS engine, and model weights download automatically from Hugging Face on first use (~3.5 GB per model variant).
+> **Tip:** A GPU and model download are only needed for the **local** Qwen3-TTS engine. If you use a **cloud** TTS backend (Alibaba Qwen / DashScope, Volcengine Doubao, or Edge TTS), no GPU, model download, or external TTS server is required — only the matching API key. The local Qwen3-TTS engine downloads weights from Hugging Face on first use (~3.5 GB per model variant).
 
 ---
 
@@ -165,7 +167,7 @@ Configure the LLM connection and TTS engine. At minimum:
 - **Base URL:** `http://localhost:1234/v1` (LM Studio) or `http://localhost:11434/v1` (Ollama)
 - **API Key:** your API key (`local` for local servers)
 - **Model name:** the model to use (e.g. `qwen2.5-14b`)
-- **TTS mode:** `local` (built-in engine, recommended) — loads the model directly, no external server
+- **TTS backend:** choose `local` Qwen3-TTS (built-in, offline) or a cloud service — Alibaba Qwen TTS (DashScope), Volcengine (Doubao) TTS, or Edge TTS; cloud backends need the matching API key but no GPU
 - Click **Save Config** when done
 
 **Step 2 — Script**
